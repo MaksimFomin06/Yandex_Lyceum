@@ -27,16 +27,6 @@
      <string>Введите время мероприятия:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="input_time">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>150</y>
-      <width>171</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_date">
     <property name="enabled">
      <bool>true</bool>
@@ -51,19 +41,6 @@
     </property>
     <property name="text">
      <string>Введите дату мероприятия:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_error">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>260</y>
-      <width>181</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ОШИБКА: Заполните все поля</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="input_name">
@@ -126,6 +103,16 @@
       <width>171</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="dateTime">
+     <datetime>
+      <hour>23</hour>
+      <minute>58</minute>
+      <second>30</second>
+      <year>2025</year>
+      <month>1</month>
+      <day>23</day>
+     </datetime>
     </property>
    </widget>
    <widget class="QLabel" name="label_geo">
@@ -260,16 +247,6 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="input_replace_date">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>150</y>
-      <width>221</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="input_replace_geo">
     <property name="geometry">
      <rect>
@@ -304,16 +281,6 @@
     </property>
     <property name="text">
      <string>Изменить время</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="input_replace_time">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>195</y>
-      <width>221</width>
-      <height>20</height>
-     </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="replaceNameButton">
@@ -402,6 +369,79 @@
     </property>
     <property name="text">
      <string>Удалить</string>
+    </property>
+   </widget>
+   <widget class="QTimeEdit" name="input_time">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>150</y>
+      <width>171</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="dateTime">
+     <datetime>
+      <hour>23</hour>
+      <minute>58</minute>
+      <second>30</second>
+      <year>2000</year>
+      <month>1</month>
+      <day>1</day>
+     </datetime>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_error">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>260</y>
+      <width>171</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>ОШИБКА: Заполните все поля</string>
+    </property>
+   </widget>
+   <widget class="QDateEdit" name="input_replace_date">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>150</y>
+      <width>221</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="dateTime">
+     <datetime>
+      <hour>23</hour>
+      <minute>58</minute>
+      <second>30</second>
+      <year>2025</year>
+      <month>1</month>
+      <day>23</day>
+     </datetime>
+    </property>
+   </widget>
+   <widget class="QTimeEdit" name="input_replace_time">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>195</y>
+      <width>221</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="dateTime">
+     <datetime>
+      <hour>23</hour>
+      <minute>58</minute>
+      <second>30</second>
+      <year>2025</year>
+      <month>1</month>
+      <day>23</day>
+     </datetime>
     </property>
    </widget>
   </widget>
