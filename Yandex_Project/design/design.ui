@@ -193,7 +193,7 @@
      <rect>
       <x>240</x>
       <y>40</y>
-      <width>241</width>
+      <width>251</width>
       <height>16</height>
      </rect>
     </property>
@@ -216,7 +216,7 @@
      <rect>
       <x>240</x>
       <y>85</y>
-      <width>101</width>
+      <width>181</width>
       <height>16</height>
      </rect>
     </property>
@@ -229,7 +229,7 @@
      <rect>
       <x>240</x>
       <y>130</y>
-      <width>81</width>
+      <width>151</width>
       <height>16</height>
      </rect>
     </property>
@@ -262,7 +262,7 @@
      <rect>
       <x>240</x>
       <y>220</y>
-      <width>151</width>
+      <width>191</width>
       <height>16</height>
      </rect>
     </property>
@@ -275,7 +275,7 @@
      <rect>
       <x>240</x>
       <y>175</y>
-      <width>91</width>
+      <width>181</width>
       <height>16</height>
      </rect>
     </property>
@@ -391,19 +391,6 @@
      </datetime>
     </property>
    </widget>
-   <widget class="QLabel" name="label_error">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>260</y>
-      <width>171</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ОШИБКА: Заполните все поля</string>
-    </property>
-   </widget>
    <widget class="QDateEdit" name="input_replace_date">
     <property name="geometry">
      <rect>
@@ -470,30 +457,30 @@
      <string>Ничего не выбрано</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_name_error">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>280</y>
-      <width>291</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Мероприятие с таким названием уже существует</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_add_succesfull">
+   <widget class="QLabel" name="label_add_notification">
     <property name="geometry">
      <rect>
       <x>20</x>
       <y>260</y>
-      <width>111</width>
+      <width>301</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Запись добавлена</string>
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_replace_notification">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>280</y>
+      <width>271</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

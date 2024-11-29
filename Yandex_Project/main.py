@@ -15,11 +15,8 @@ class EventManager(QMainWindow):
         self.db.setDatabaseName("data/EventManager_db.sqlite")
 
         self.fill_list()
-        self.label_error.hide()
         self.label_delete_text.hide()
         self.label_none_text.hide()
-        self.label_name_error.hide()
-        self.label_add_succesfull.hide()
 
         self.AddButton.clicked.connect(self.add_btn_click)
         self.replaceNameButton.clicked.connect(lambda: self.update_field("event_name", "name"))
@@ -27,6 +24,12 @@ class EventManager(QMainWindow):
         self.replaceTimeButton.clicked.connect(lambda: self.update_field("event_time", "time"))
         self.replaceGeoButton.clicked.connect(lambda: self.update_field("event_geo", "geo"))
         self.DeleteButton.clicked.connect(self.delete_event)
+
+        self.add_div_texts = ["Ошибка: Заполните все поля",
+                              "Ошибка: Запись с таким названием уже существует",
+                              "Запись добавлена"]
+        self.replace_div_texts = ["Поле не может быть пустым",
+                                  "Запись изменена"]
         
     def add_btn_click(self):
         self.db.open()
@@ -40,43 +43,34 @@ class EventManager(QMainWindow):
         request.exec(query)
 
         if not all([input_name, input_date, input_time, input_geo]):
-            self.label_error.show()
-            self.label_add_succesfull.hide()
+            self.label_add_notification.setText(self.add_div_texts[0])
         elif request.first():
-            self.label_error.hide()
-            self.label_name_error.show()
-            self.label_add_succesfull.hide()
-            self.db.close()
-            return
+            self.label_add_notification.setText(self.add_div_texts[1])
         else:
-            self.label_name_error.hide()
-            self.label_error.hide()
             query = f"INSERT INTO events VALUES ('{input_name}', '{input_date}', '{input_time}', '{input_geo}')"
             request.exec(query)
-            self.label_add_succesfull.show()
+            self.label_add_notification.setText(self.add_div_texts[2])
         self.db.close()
         self.update()
         
 
     def update_field(self, field, param):
         input_name = self.input_replace_box.currentText()
-        new_value = getattr(self, f"input_replace_{param}").text().strip()
-        if not new_value:
-            self.label_error.show()
-            return
-        self.label_error.hide()
-        self.db.open()
-        request = QSqlQuery(self.db)
-        query = f"UPDATE events SET {field} = '{new_value}' WHERE event_name = '{input_name}'"
-        request.exec(query)
+        if not input_name:
+            self.label_replace_notification.setText(self.replace_div_texts[0])
+        else:
+            new_value = getattr(self, f"input_replace_{param}").text().strip()
+            self.db.open()
+            request = QSqlQuery(self.db)
+            query = f"UPDATE events SET {field} = '{new_value}' WHERE event_name = '{input_name}'"
+            request.exec(query)
+            self.label_replace_notification.setText(self.replace_div_texts[1])
         self.db.close()
         self.update()
 
     def delete_event(self):
         input_name = self.input_delete_name.currentText()
         self.db.open()
-        if not input_name:
-            self.label_none_text.show()
         request = QSqlQuery(self.db)
         query = f"DELETE FROM events WHERE event_name = '{input_name}'"
         self.label_delete_text.show()
