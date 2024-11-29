@@ -15,8 +15,6 @@ class EventManager(QMainWindow):
         self.db.setDatabaseName("data/EventManager_db.sqlite")
 
         self.fill_list()
-        self.label_delete_text.hide()
-        self.label_none_text.hide()
 
         self.AddButton.clicked.connect(self.add_btn_click)
         self.replaceNameButton.clicked.connect(lambda: self.update_field("event_name", "name"))
@@ -30,6 +28,8 @@ class EventManager(QMainWindow):
                               "Запись добавлена"]
         self.replace_div_texts = ["Поле не может быть пустым",
                                   "Запись изменена"]
+        self.delete_div_texts = ["Ничего не найдено",
+                                 "Запись удалена"]
         
     def add_btn_click(self):
         self.db.open()
@@ -72,9 +72,12 @@ class EventManager(QMainWindow):
         input_name = self.input_delete_name.currentText()
         self.db.open()
         request = QSqlQuery(self.db)
-        query = f"DELETE FROM events WHERE event_name = '{input_name}'"
-        self.label_delete_text.show()
-        request.exec(query)
+        if not input_name:
+            self.label_delete_notificatoin.setText(self.delete_div_texts[0])
+        else:
+            query = f"DELETE FROM events WHERE event_name = '{input_name}'"
+            request.exec(query)
+            self.label_delete_notificatoin.setText(self.delete_div_texts[1])
         self.db.close()
         self.update()
 
