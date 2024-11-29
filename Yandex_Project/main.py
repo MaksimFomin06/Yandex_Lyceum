@@ -19,6 +19,7 @@ class EventManager(QMainWindow):
         self.label_delete_text.hide()
         self.label_none_text.hide()
         self.label_name_error.hide()
+        self.label_add_succesfull.hide()
 
         self.AddButton.clicked.connect(self.add_btn_click)
         self.replaceNameButton.clicked.connect(lambda: self.update_field("event_name", "name"))
@@ -40,9 +41,11 @@ class EventManager(QMainWindow):
 
         if not all([input_name, input_date, input_time, input_geo]):
             self.label_error.show()
+            self.label_add_succesfull.hide()
         elif request.first():
             self.label_error.hide()
             self.label_name_error.show()
+            self.label_add_succesfull.hide()
             self.db.close()
             return
         else:
@@ -50,8 +53,10 @@ class EventManager(QMainWindow):
             self.label_error.hide()
             query = f"INSERT INTO events VALUES ('{input_name}', '{input_date}', '{input_time}', '{input_geo}')"
             request.exec(query)
+            self.label_add_succesfull.show()
         self.db.close()
         self.update()
+        
 
     def update_field(self, field, param):
         input_name = self.input_replace_box.currentText()
