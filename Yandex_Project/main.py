@@ -24,7 +24,7 @@ class EventManager(QMainWindow):
         Устанавливает заголовок окна и загружает интерфейс из .ui файла.
         """
         super().__init__()
-        uic.loadUi("design/design.ui", self)
+        uic.loadUi("Yandex_Project\design\design.ui", self)
         self.setWindowTitle("Event Manager")
         self.init_ui()
 
@@ -36,7 +36,7 @@ class EventManager(QMainWindow):
         работает с таблицей.
         """
         self.db = QSqlDatabase.addDatabase("QSQLITE")
-        self.db.setDatabaseName("data/EventManager_db.sqlite")
+        self.db.setDatabaseName("Yandex_Project\data\EventManager_db.sqlite")
 
         self.fill_list()
         self.fill_db()
