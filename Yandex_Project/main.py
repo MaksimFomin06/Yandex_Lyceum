@@ -8,9 +8,10 @@ class EventManager(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi("design/design.ui", self)
-        self.init_ui()
+        self.setWindowTitle("Event Manager")
+        self.initUi()
 
-    def init_ui(self):
+    def initUi(self):
         self.db = QSqlDatabase.addDatabase("QSQLITE")
         self.db.setDatabaseName("data/EventManager_db.sqlite")
 
@@ -30,6 +31,9 @@ class EventManager(QMainWindow):
                                   "Запись изменена"]
         self.delete_div_texts = ["Ничего не найдено",
                                  "Запись удалена"]
+    
+    def fill_db(self):
+        pass
         
     def add_btn_click(self):
         self.db.open()

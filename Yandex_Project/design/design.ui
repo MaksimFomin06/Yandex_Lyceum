@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>781</width>
-    <height>652</height>
+    <width>742</width>
+    <height>1039</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -470,13 +470,23 @@
      <string/>
     </property>
    </widget>
+   <widget class="QTableWidget" name="tableWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>280</y>
+      <width>711</width>
+      <height>381</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>781</width>
+     <width>742</width>
      <height>21</height>
     </rect>
    </property>
