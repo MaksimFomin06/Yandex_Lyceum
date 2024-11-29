@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>742</width>
+    <width>752</width>
     <height>1039</height>
    </rect>
   </property>
@@ -449,7 +449,7 @@
      <rect>
       <x>240</x>
       <y>280</y>
-      <width>271</width>
+      <width>411</width>
       <height>16</height>
      </rect>
     </property>
@@ -470,13 +470,13 @@
      <string/>
     </property>
    </widget>
-   <widget class="QTableWidget" name="tableWidget">
+   <widget class="QTableWidget" name="events_db">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>280</y>
-      <width>711</width>
-      <height>381</height>
+      <x>10</x>
+      <y>320</y>
+      <width>721</width>
+      <height>471</height>
      </rect>
     </property>
    </widget>
@@ -486,7 +486,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>742</width>
+     <width>752</width>
      <height>21</height>
     </rect>
    </property>
