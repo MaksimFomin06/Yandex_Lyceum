@@ -47,7 +47,7 @@ class HomeWork(QWidget):
 
     def initUi(self):
         db = QSqlDatabase.addDatabase("QSQLITE")
-        db.setDatabaseName("coffee.sqlite")
+        db.setDatabaseName("Yandex_Lyceum\Lesson_16\Yandex_Homework\coffee.sqlite")
         db.open()
 
         model = QSqlTableModel(self, db)
