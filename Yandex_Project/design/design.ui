@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>781</width>
-    <height>325</height>
+    <height>652</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -442,6 +442,45 @@
       <month>1</month>
       <day>23</day>
      </datetime>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_delete_text">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>130</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Запись удалена</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_none_text">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>130</y>
+      <width>111</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ничего не выбрано</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_name_error">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>280</y>
+      <width>291</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Мероприятие с таким названием уже существует</string>
     </property>
    </widget>
   </widget>
