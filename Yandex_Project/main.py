@@ -21,12 +21,12 @@ class EventManager(QMainWindow):
         self.label_name_error.hide()
 
         self.AddButton.clicked.connect(self.add_btn_click)
-        self.replaceNameButton.clicked.connect(lambda: self.update_field("event_name"))
-        self.replaceDateButton.clicked.connect(lambda: self.update_field("event_date"))
-        self.replaceTimeButton.clicked.connect(lambda: self.update_field("event_time"))
-        self.replaceGeoButton.clicked.connect(lambda: self.update_field("event_geo"))
+        self.replaceNameButton.clicked.connect(lambda: self.update_field("event_name", "name"))
+        self.replaceDateButton.clicked.connect(lambda: self.update_field("event_date", "date"))
+        self.replaceTimeButton.clicked.connect(lambda: self.update_field("event_time", "time"))
+        self.replaceGeoButton.clicked.connect(lambda: self.update_field("event_geo", "geo"))
         self.DeleteButton.clicked.connect(self.delete_event)
-
+        
     def add_btn_click(self):
         self.db.open()
         input_name = self.input_name.text().strip()
@@ -51,10 +51,11 @@ class EventManager(QMainWindow):
             query = f"INSERT INTO events VALUES ('{input_name}', '{input_date}', '{input_time}', '{input_geo}')"
             request.exec(query)
         self.db.close()
+        self.update()
 
-    def update_field(self, field):
+    def update_field(self, field, param):
         input_name = self.input_replace_box.currentText()
-        new_value = getattr(self, f"input_replace_{field}").text().strip()
+        new_value = getattr(self, f"input_replace_{param}").text().strip()
         if not new_value:
             self.label_error.show()
             return
@@ -64,6 +65,7 @@ class EventManager(QMainWindow):
         query = f"UPDATE events SET {field} = '{new_value}' WHERE event_name = '{input_name}'"
         request.exec(query)
         self.db.close()
+        self.update()
 
     def delete_event(self):
         input_name = self.input_delete_name.currentText()
@@ -75,8 +77,18 @@ class EventManager(QMainWindow):
         self.label_delete_text.show()
         request.exec(query)
         self.db.close()
+        self.update()
 
     def fill_list(self):
+        self.db.open()
+        query = QSqlQuery("SELECT event_name FROM events")
+        while query.next():
+            self.input_replace_box.addItem(query.value(0))
+            self.input_delete_name.addItem(query.value(0))
+
+    def update(self):
+        self.input_replace_box.clear()
+        self.input_delete_name.clear()
         self.db.open()
         query = QSqlQuery("SELECT event_name FROM events")
         while query.next():
