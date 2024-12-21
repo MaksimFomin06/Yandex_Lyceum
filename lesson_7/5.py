@@ -2,8 +2,8 @@ import io
 import sys
 
 from PyQt6 import uic
-from random import choice
 from PyQt6.QtWidgets import QMainWindow, QApplication
+
 
 template = """<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
@@ -151,29 +151,38 @@ class FileStat(QMainWindow):
         self.setFixedSize(500, 250)
         f = io.StringIO(template)
         uic.loadUi(f, self)
-        self.button.clicked.connect(self.quest)
-    def quest(self):
-        text = self.filenameEdit.text()
+        self.button.clicked.connect(self.calculate_stats)
+
+    def calculate_stats(self):
+        filename = self.filenameEdit.text()
         try:
-            with open(f"lesson_7/{text}", "r") as f:
-                lines = f.read().splitlines()
-                if len(lines) > 0:
-                    print(max(lines))
-                    self.lineEdit.setText(f"{max(lines)}")
-                    self.lineEdit_2.setText(f"{min(lines)}")
-                    self.lineEdit_3.setText(f"{round((sum(lines) / len(lines)), 2)}")
-                
-                if len(lines) < 0:
-                    self.statusBar().showMessage("Указанный файл пуст")
-                else:
-                    pass
+            with open(f"{filename}", 'r') as file:
+                numbers = []
+                for line in file:
+                    try:
+                        number = float(line.strip())
+                        numbers.append(number)
+                    except ValueError:
+                        pass
+
+                if not numbers:
+                    self.statusBar().showMessage('Файл пустой или содержит неверные данные')
+                    return
+
+                max_value = max(numbers)
+                min_value = min(numbers)
+                avg_value = round(sum(numbers) / len(numbers), 2)
+
+                self.lineEdit.setText(str(max_value))
+                self.lineEdit_2.setText(str(min_value))
+                self.lineEdit_3.setText(str(avg_value))
 
         except FileNotFoundError:
-            self.statusBar().showMessage("Указанный файл не существует")
+            self.statusBar().showMessage(f'Файл {filename} не найден')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = FileStat()
-    ex.show()
+    window = FileStat()
+    window.show()
     sys.exit(app.exec())
