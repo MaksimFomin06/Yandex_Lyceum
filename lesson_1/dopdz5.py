@@ -19,9 +19,9 @@ for row in data:
 
 sorted_rooms = sorted(rooms.keys())
 
-result = []
+ans = []
 for room in sorted_rooms:
     unique_subjects = list(dict.fromkeys(rooms[room]))
-    result.append(f"{room}: {', '.join(unique_subjects)}")
+    ans.append(f"{room}: {', '.join(unique_subjects)}")
 
-print("\n".join(result))
+print("\n".join(ans))
