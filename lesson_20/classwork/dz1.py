@@ -22,16 +22,17 @@ class Counter:
                     self.game_end = True
                 elif event.type == pygame.WINDOWMINIMIZED:
                     self.count += 1
-                    print(self.count)
+                    self.draw()
+            pygame.display.flip()
 
     def draw(self):
+        self.__screen.fill((0, 0, 0))
         font = pygame.font.Font(None, 36)
         text = font.render(f"{self.count}", True, (255, 0, 0))
         text_rect = text.get_rect(center=(100, 100))
         self.__screen.blit(text, text_rect)
-        pygame.display.flip()
 
-    
+
 def main():
     app = Counter()
     app.run()
