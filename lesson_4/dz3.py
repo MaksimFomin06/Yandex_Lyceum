@@ -72,7 +72,7 @@ class TicTacToe(QWidget):
             self.end_game("Ничья!")
 
     def end_game(self, message):
-        self.result_label.setText(message)
+        self.result.setText(message)
         self.game_active = False
     
         for row in self.button_grid:
@@ -93,10 +93,11 @@ class TicTacToe(QWidget):
     def start_new_game(self):
         self.game_active = True
         self.moves_count = 0
-        self.result.clear()
+        self.result.setText("")
         for row in self.button_grid:
             for button in row:
                 button.setText("")
+                button.setEnabled(True)
 
 
 if __name__ == '__main__':
