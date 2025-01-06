@@ -1,188 +1,123 @@
-import io
 import sys
-
-from PyQt6 import uic
-from PyQt6.QtWidgets import QMainWindow, QApplication
-
-
-template = """<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>425</width>
-    <height>243</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>MainWindow</string>
-  </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="button">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>50</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Рассчитать</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="filenameEdit">
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>50</y>
-      <width>131</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="maxEdit">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>90</y>
-      <width>141</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Максимальное значение:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="minEdit">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>120</y>
-      <width>131</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Минимальное значение:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="avgEdit">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>150</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Среднее значение:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>81</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Имя файла</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>90</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>120</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_3">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>150</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>425</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
- </widget>
- <resources/>
- <connections/>
-</ui>
-"""
+from PyQt6.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+)
 
 
-class FileStat(QMainWindow):
+class FileStat(QWidget):
     def __init__(self):
         super().__init__()
-        self.setFixedSize(500, 250)
-        f = io.StringIO(template)
-        uic.loadUi(f, self)
-        self.button.clicked.connect(self.calculate_stats)
+        self.initUI()
 
-    def calculate_stats(self):
-        filename = self.filenameEdit.text()
+    def initUI(self):
+        vbox = QVBoxLayout()
+
+        # Поле ввода имени файла
+        self.filename_label = QLabel("Имя файла:")
+        self.filenameEdit = QLineEdit()
+        vbox.addWidget(self.filename_label)
+        vbox.addWidget(self.filenameEdit)
+
+        # Кнопка для запуска анализа
+        self.button = QPushButton("Анализировать")
+        self.button.clicked.connect(self.analyze_file)
+        vbox.addWidget(self.button)
+
+        # Поля для вывода результатов
+        self.min_label = QLabel("Минимальное значение:")
+        self.max_label = QLabel("Максимальное значение:")
+        self.avg_label = QLabel("Среднее значение:")
+
+        self.minEdit = QLineEdit()
+        self.minEdit.setReadOnly(True)
+        self.maxEdit = QLineEdit()
+        self.maxEdit.setReadOnly(True)
+        self.avgEdit = QLineEdit()
+        self.avgEdit.setReadOnly(True)
+
+        vbox.addWidget(self.min_label)
+        vbox.addWidget(self.minEdit)
+        vbox.addWidget(self.max_label)
+        vbox.addWidget(self.maxEdit)
+        vbox.addWidget(self.avg_label)
+        vbox.addWidget(self.avgEdit)
+
+        self.setLayout(vbox)
+
+    def analyze_file(self):
+        # Очистка полей перед анализом
+        self.clear_fields()
+
+        # Получение имени файла
+        filename = self.filenameEdit.text().strip()
+
         try:
-            with open(f"{filename}", 'r') as file:
-                numbers = []
-                for line in file:
-                    try:
-                        number = float(line.strip())
-                        numbers.append(number)
-                    except ValueError:
-                        pass
-
-                if not numbers:
-                    self.statusBar().showMessage('Файл пустой или содержит неверные данные')
-                    return
-
-                max_value = max(numbers)
-                min_value = min(numbers)
-                avg_value = round(sum(numbers) / len(numbers), 2)
-
-                self.lineEdit.setText(str(max_value))
-                self.lineEdit_2.setText(str(min_value))
-                self.lineEdit_3.setText(str(avg_value))
-
+            with open(filename, 'r') as file:
+                content = file.read()
         except FileNotFoundError:
-            self.statusBar().showMessage(f'Файл {filename} не найден')
+            self.show_status_message("Указанный файл не существует")
+            return
+        except Exception as e:
+            self.show_status_message(str(e))
+            return
+
+        # Преобразование содержимого файла в список целых чисел
+        numbers = []
+        for num_str in content.split():
+            try:
+                num = int(num_str)
+                numbers.append(num)
+            except ValueError:
+                pass
+
+        if not numbers:
+            self.show_status_message("Файл содержит некорректные данные")
+            return
+
+        # Вычисление минимального, максимального и среднего значения
+        minimum = min(numbers)
+        maximum = max(numbers)
+        average = sum(numbers) / len(numbers)
+
+        # Вывод результатов в поля
+        self.minEdit.setText(str(minimum))
+        self.maxEdit.setText(str(maximum))
+        self.avgEdit.setText(f"{average:.2f}")
+
+        # Сохранение результатов в файл out.txt
+        with open('out.txt', 'w') as outfile:
+            outfile.write(f'Максимальное значение = {maximum}\n')
+            outfile.write(f'Минимальное значение = {minimum}\n')
+            outfile.write(f'Среднее значение = {average:.2f}')
+
+    def clear_fields(self):
+        """Очищает поля вывода"""
+        self.minEdit.clear()
+        self.maxEdit.clear()
+        self.avgEdit.clear()
+
+    def show_status_message(self, message):
+        """Отображает сообщение в статусбаре"""
+        main_window.statusBar().showMessage(message)
+
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.setCentralWidget(FileStat())
+        self.setWindowTitle("Анализатор файлов")
+        self.setFixedSize(300, 200)
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = FileStat()
-    window.show()
+    main_window = MainWindow()
+    main_window.show()
     sys.exit(app.exec())
