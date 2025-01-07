@@ -3,10 +3,8 @@ import csv
 
 def main():
     federal_district = input("Название федерального округа: ").strip()
-    start_year = int(input("Начальный год: "))
-    end_year = int(input("Конечный год: "))
+    start_year, end_year = map(int, input().split())
 
-    # Проверка допустимости года
     if start_year < 2015 or start_year > 2019 or end_year < 2015 or end_year > 2019 or start_year >= end_year:
         print("Некорректные годы")
         return
@@ -26,8 +24,11 @@ def main():
     with open('out_file.csv', 'w', newline='', encoding='utf-8') as outfile:
         writer = csv.writer(outfile, delimiter=';')
         writer.writerow(['Субъект', str(start_year), str(end_year)])
-        for subject in subjects:
-            writer.writerow(subject)
+        if subjects:
+            for subject in subjects:
+                writer.writerow(subject)
+        else:
+            writer.writerow([])
 
 
 if __name__ == "__main__":
