@@ -1,27 +1,19 @@
 def stairs(objects):
     result = []
-    object_index = 0
-    position_in_object = 0
+    index = 0
 
     while objects:
-        current_object = objects[object_index]
+        current_object = objects[index % len(objects)]
 
         try:
-            element = current_object[position_in_object]
-        except IndexError:
-            object_index = (object_index + 1) % len(objects)
-            position_in_object = 0
+            element = next(current_object)
+        except StopIteration:
+            del objects[index % len(objects)]
             continue
-
+            
         if element % 2 == 0:
-            object_index = (object_index + 1) % len(objects)
-            position_in_object = 0
+            index += 1
         else:
             result.append(element)
-            position_in_object += 1
-
-        if position_in_object >= len(current_object):
-            objects.pop(object_index)
-            object_index %= len(objects)
-
-    return result
+    
+    return set(result)
