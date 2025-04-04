@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="mb-4">Записи в блоге</h1>
+  {% for item in news %}
+    <div class="col-md-12 border rounded border-secondary mb-3 p-3">
+      <h2>{{ item.title }}</h2>
+      <div class="mb-2">{{ item.content }}</div>
+      <div class="text-muted">Автор - {{ item.user.name }}, Дата написания - {{ item.created_date }}</div>
+    </div>
+  {% endfor %}
+{% endblock %}
