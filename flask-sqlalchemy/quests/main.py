@@ -1,10 +1,16 @@
-from flask import Flask
+from flask import Flask, render_template
 from data import db_session
 from data.users import User
 from data.jobs import Jobs
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "yandexlyceum_secret_key"
+
+
+@app.route("/")
+def index():
+    db_sess = db_session.create_session()
+    return render_template("index.html")
 
 
 def add_captain():
