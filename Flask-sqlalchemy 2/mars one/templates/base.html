@@ -7,13 +7,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   </head>
   <body>
+    <a class="btn" href="/">Главная</a>
     {% if current_user.is_authenticated %}
       <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+      <a class="nav-link" href="/departments">Департаменты</a>
     {% else %}
       <p>
         <a class="btn btn-primary" href="/register">Зарегистрироваться</a>
         <a class="btn btn-success" href="/login">Войти</a>
-        <a class="btn" href="/">Главная</a>
       </p>
     {% endif %}
     {% block content %}
