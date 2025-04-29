@@ -1,0 +1,3 @@
+{"name": "Zepar", "sounds": ["explosion"], "sources": ["airplane"], "ave_duration": 73, "max_volume": 30}
+{"name": "Shax", "sounds": ["explosion", "voice"], "sources": ["airplane", "log", "tram"], "ave_duration": 45, "max_volume": 102}
+{"name": "Vassago", "sounds": ["blow", "clap", "trumpet"], "sources": ["door", "locomotive", "log"], "ave_duration": 36, "max_volume": 120}
