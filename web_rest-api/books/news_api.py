@@ -4,6 +4,7 @@ from data import db_session
 from data.news import News
 
 
+
 blueprint = Blueprint(
     'news_api',
     __name__,
