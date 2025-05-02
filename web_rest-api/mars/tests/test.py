@@ -1,4 +1,4 @@
-from requests import delete, get, post
+from requests import delete, get, post, put
 """
 #print(get('http://localhost:5000/api/jobs').json())
 
@@ -30,5 +30,14 @@ print(delete("http://localhost:5000/api/jobs/8"))
 print(delete("http://localhost:5000/api/jobs/sdfsd"))
 
 print(get("http://localhost:5000/api/jobs/sdfsd").json())
-"""
  
+print(put("http://localhost:5000/api/jobs/3", 
+           json={"job": "работа измененная через PATCH"}).json())
+print(put("http://localhost:5000/api/jobs/hb", 
+           json={"job": "работа измененная через PATCH"}).json())
+
+print(put("http://localhost:5000/api/jobs/3", 
+           json={"jobbbbb": "работа измененная через PATCH"}).json())
+
+print(get("http://localhost:5000/api/jobs").json())
+"""
