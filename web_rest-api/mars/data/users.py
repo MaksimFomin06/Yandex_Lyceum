@@ -18,7 +18,8 @@ class User(SqlAlchemyBase, UserMixin):
     email = sqlalchemy.Column(sqlalchemy.String, unique=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
     modified_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
-
+    city_from = sqlalchemy.Column(sqlalchemy.String)
+    
     jobs = sqlalchemy.orm.relationship("Jobs", back_populates="user")
 
     def set_password(self, password):
