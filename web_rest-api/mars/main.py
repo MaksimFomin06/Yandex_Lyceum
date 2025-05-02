@@ -2,6 +2,7 @@ from flask import Flask, abort, redirect, render_template, request
 from forms.user import LoginForm, RegisterForm
 from forms.job import JobForm
 from data import db_session
+import users_show
 import mars_api
 from data.users import User
 from data.departments import Department
@@ -262,6 +263,7 @@ def delete_department(id):
 def main():
     db_session.global_init("db/mars_explorer.db")
     app.register_blueprint(mars_api.blueprint)
+    app.register_blueprint(users_show.blueprint)
     app.run()
 
 
