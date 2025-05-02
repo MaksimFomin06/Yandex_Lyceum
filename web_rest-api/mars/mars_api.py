@@ -1,14 +1,131 @@
+import datetime
 from flask import make_response, jsonify, Blueprint, request, abort
 
 from data import db_session
 from data.jobs import Jobs
-
+from data.users import User
+from data.users import User
 
 blueprint = Blueprint(
     "jobs_api", 
     __name__,
     template_folder='templates'
 )
+
+
+def user_to_dict(user):
+    return {
+        'id': user.id,
+        'surname': user.surname,
+        'name': user.name,
+        'age': user.age,
+        'position': user.position,
+        'speciality': user.speciality,
+        'address': user.address,
+        'email': user.email,
+        'modified_date': user.modified_date.isoformat()
+    }
+
+
+@blueprint.route('/api/users', methods=['GET'])
+def get_users():
+    db_sess = db_session.create_session()
+    users = db_sess.query(User).all()
+    return jsonify({'users': [user_to_dict(user) for user in users]})
+
+
+@blueprint.route('/api/users/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).get(user_id)
+    if not user:
+        abort(404, message=f"User {user_id} not found")
+    return jsonify({'user': user_to_dict(user)})
+
+
+@blueprint.route('/api/users', methods=['POST'])
+def create_user():
+    if not request.json:
+        abort(400, message="Empty request")
+    
+    required_fields = ['surname', 'name', 'email', 'password']
+    if not all(field in request.json for field in required_fields):
+        abort(400, message=f"Missing required fields: {required_fields}")
+    
+    db_sess = db_session.create_session()
+    
+    if db_sess.query(User).filter(User.email == request.json['email']).first():
+        abort(400, message="User with this email already exists")
+    
+    user = User(
+        surname=request.json['surname'],
+        name=request.json['name'],
+        email=request.json['email'],
+        age=request.json.get('age'),
+        position=request.json.get('position'),
+        speciality=request.json.get('speciality'),
+        address=request.json.get('address'),
+        modified_date=datetime.datetime.now()
+    )
+    user.set_password(request.json['password'])
+    
+    db_sess.add(user)
+    db_sess.commit()
+    
+    return jsonify({'success': 'User created', 'id': user.id}), 201
+
+
+@blueprint.route('/api/users/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    if not request.json:
+        abort(400, message="Empty request")
+    
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).get(user_id)
+    
+    if not user:
+        abort(404, message=f"User {user_id} not found")
+    
+    fields = ['surname', 'name', 'age', 'position', 
+              'speciality', 'address', 'email', 'password']
+    
+    for field in fields:
+        if field in request.json:
+            if field == 'email' and request.json['email'] != user.email:
+                if db_sess.query(User).filter(User.email == request.json['email']).first():
+                    abort(400, message="Email already in use")
+                user.email = request.json['email']
+            elif field == 'password':
+                user.set_password(request.json['password'])
+            else:
+                setattr(user, field, request.json[field])
+    
+    user.modified_date = datetime.datetime.now()
+    db_sess.commit()
+    
+    return jsonify({'success': f'User {user_id} updated'})
+
+
+@blueprint.route('/api/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).get(user_id)
+    
+    if not user:
+        abort(404, message=f"User {user_id} not found")
+    
+    db_sess.delete(user)
+    db_sess.commit()
+    return jsonify({'success': f'User {user_id} deleted'})
+
+
+@blueprint.errorhandler(404)
+def not_found(error):
+    return jsonify({'error': str(error)}), 404
+
+@blueprint.errorhandler(400)
+def bad_request(error):
+    return jsonify({'error': str(error)}), 400
 
 
 @blueprint.route("/api/jobs")
