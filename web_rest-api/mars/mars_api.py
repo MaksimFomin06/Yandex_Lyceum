@@ -40,6 +40,24 @@ def get_one_job(job_id):
     )
 
 
+@blueprint.route("/api/jobs", methods=['POST'])
+def create_job():
+    if not request.json:
+        return make_response(jsonify({"error": "Empty request"}), 400)
+    elif not all(key in request.json for key in
+                 ["team_leader", "job", "work_size", "collaborators"]):
+        return make_response(jsonify({"error": "Bad request"}), 400)
+    db_sess = db_session.create_session()
+    jobs = Jobs(
+        team_leader=request.json["team_leader"],
+        job=request.json["job"],
+        work_size=request.json["work_size"],
+        collaborators=request.json["collaborators"]
+    )
+    db_sess.add(jobs)
+    db_sess.commit()
+    return jsonify({"id": "jobs"})
+
 @blueprint.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
