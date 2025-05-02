@@ -15,6 +15,7 @@ class RegisterForm(FlaskForm):
     address = StringField("Адрес")
     remember_me = BooleanField("Запомнить меня")
     submit = SubmitField("Зарегистрироваться")
+    city_from = StringField("Город рождения")
 
 
 class LoginForm(FlaskForm):
