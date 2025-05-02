@@ -23,7 +23,8 @@ def user_to_dict(user):
         'speciality': user.speciality,
         'address': user.address,
         'email': user.email,
-        'modified_date': user.modified_date.isoformat()
+        'modified_date': user.modified_date.isoformat(),
+        'city_from': user.city_from,
     }
 
 
@@ -65,7 +66,8 @@ def create_user():
         position=request.json.get('position'),
         speciality=request.json.get('speciality'),
         address=request.json.get('address'),
-        modified_date=datetime.datetime.now()
+        modified_date=datetime.datetime.now(),
+        city_from=request.json.get("city_form"),
     )
     user.set_password(request.json['password'])
     
@@ -97,6 +99,8 @@ def update_user(user_id):
                 user.email = request.json['email']
             elif field == 'password':
                 user.set_password(request.json['password'])
+            elif field == "city_from" in request.json:
+                user.city_from = request.json["city_from"]
             else:
                 setattr(user, field, request.json[field])
     
