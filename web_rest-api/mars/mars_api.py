@@ -70,6 +70,45 @@ def delete_job(job_id):
     return jsonify({'success': f'Job {job_id} deleted'}), 200
 
 
+@blueprint.route('/api/jobs/<int:job_id>', methods=['GET', 'PUT'])
+def edit_job(job_id):
+    db_sess = db_session.create_session()
+    job = db_sess.query(Jobs).get(job_id)
+    
+    if not job:
+        return jsonify({'error': 'Not found'}), 404
+    
+    if request.method == 'GET':
+        return jsonify({
+            'job': job.to_dict(only=(
+                'team_leader', 'job', 'work_size', 'collaborators',
+                'start_date', 'end_date', 'is_finished'
+            ))
+        })
+    
+    if request.method == 'PUT':
+        if not request.json:
+            return jsonify({'error': 'Empty request'}), 400
+        
+        if 'team_leader' in request.json:
+            job.team_leader = request.json['team_leader']
+        if 'job' in request.json:
+            job.job = request.json['job']
+        if 'work_size' in request.json:
+            job.work_size = request.json['work_size']
+        if 'collaborators' in request.json:
+            job.collaborators = request.json['collaborators']
+        if 'is_finished' in request.json:
+            job.is_finished = request.json['is_finished']
+        if 'start_date' in request.json:
+            job.start_date = request.json['start_date']
+        if 'end_date' in request.json:
+            job.end_date = request.json['end_date']
+        
+        db_sess.commit()
+        return jsonify({'success': f'Job {job_id} updated'}), 200
+
+
 @blueprint.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
