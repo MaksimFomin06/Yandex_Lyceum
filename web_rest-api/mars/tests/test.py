@@ -1,4 +1,7 @@
 from requests import delete, get, post, put
+
+print(get("http://localhost:5000/api/users").json())
+
 """
 #print(get('http://localhost:5000/api/jobs').json())
 
