@@ -22,6 +22,25 @@ class User(SqlAlchemyBase, UserMixin):
     
     jobs = sqlalchemy.orm.relationship("Jobs", back_populates="user")
 
+    def to_dict(self, only=()):
+        user_dict = {
+            'id': self.id,
+            'surname': self.surname,
+            'name': self.name,
+            'age': self.age,
+            'position': self.position,
+            'speciality': self.speciality,
+            'address': self.address,
+            'email': self.email,
+            'city_from': self.city_from,
+            'modified_date': self.modified_date.isoformat() if self.modified_date else None
+        }
+
+        if only:
+            return {key: user_dict[key] for key in only if key in user_dict}
+            
+        return user_dict
+
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
 
