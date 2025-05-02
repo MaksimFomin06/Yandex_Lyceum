@@ -58,6 +58,18 @@ def create_job():
     db_sess.commit()
     return jsonify({"id": "jobs"})
 
+
+@blueprint.route("/api/jobs/<int:job_id>", methods=['DELETE'])
+def delete_job(job_id):
+    db_sess = db_session.create_session()
+    job = db_sess.query(Jobs).get(job_id)
+    if not job:
+        return jsonify({'error': 'Not found'}), 404
+    db_sess.delete(job)
+    db_sess.commit()
+    return jsonify({'success': f'Job {job_id} deleted'}), 200
+
+
 @blueprint.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
