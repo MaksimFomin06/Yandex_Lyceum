@@ -1,7 +1,9 @@
 from flask import Flask, abort, redirect, render_template, request
+from flask_restful import Api
 from forms.user import LoginForm, RegisterForm
 from forms.job import JobForm
 from data import db_session
+from users_resource import UsersListResource, UsersResource
 import users_show
 import mars_api
 from data.users import User
@@ -263,7 +265,10 @@ def delete_department(id):
 def main():
     db_session.global_init("db/mars_explorer.db")
     app.register_blueprint(mars_api.blueprint)
-    app.register_blueprint(users_show.blueprint)
+    #app.register_blueprint(users_show.blueprint)
+    api = Api(app)
+    api.add_resource(UsersListResource, '/api/v2/users')
+    api.add_resource(UsersResource, '/api/v2/users/<int:user_id>')
     app.run()
 
 
