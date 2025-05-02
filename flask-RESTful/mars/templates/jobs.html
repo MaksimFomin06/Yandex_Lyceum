@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="my-4">Добавление работы</h1>
+    <form action="" method="post">
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        {{ form.team_leader.label(class='form-label') }}
+        {{ form.team_leader(class='form-control', type='number') }}
+        {% for error in form.team_leader.errors %}
+          <div class="alert alert-danger mt-2">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group mt-3">
+        {{ form.job.label(class='form-label') }}
+        {{ form.job(class='form-control') }}
+        {% for error in form.job.errors %}
+          <div class="alert alert-danger mt-2">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group mt-3">
+        {{ form.work_size.label(class='form-label') }}
+        {{ form.work_size(class='form-control', type='number') }}
+        {% for error in form.work_size.errors %}
+          <div class="alert alert-danger mt-2">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group mt-3">
+        {{ form.collaborators.label(class='form-label') }}
+        {{ form.collaborators(class='form-control') }}
+        {% for error in form.collaborators.errors %}
+          <div class="alert alert-danger mt-2">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-6 form-group">
+          {{ form.start_date.label(class='form-label') }}
+          {{ form.start_date(class='form-control', type='date') }}
+          {% for error in form.start_date.errors %}
+            <div class="alert alert-danger mt-2">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="col-md-6 form-group">
+          {{ form.end_date.label(class='form-label') }}
+          {{ form.end_date(class='form-control', type='date') }}
+          {% for error in form.end_date.errors %}
+            <div class="alert alert-danger mt-2">{{ error }}</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="form-check mt-3">{{ form.is_finished(class='form-check-input') }}
+        {{ form.is_finished.label(class='form-check-label') }}</div>
+
+      <div class="form-group mt-4">{{ form.submit(class='btn btn-primary') }}</div>
+
+      {% if message %}
+        <div class="alert alert-danger mt-3">{{ message }}</div>
+      {% endif %}
+    </form>
+  </div>
+{% endblock %}

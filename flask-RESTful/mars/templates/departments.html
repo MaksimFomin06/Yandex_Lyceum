@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Департаменты</h1>
+<a href="/add_department" class="btn btn-primary">Добавить департамент</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Руководитель</th>
+            <th>Email</th>
+            <th>Члены</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for department in departments %}
+        <tr>
+            <td>{{ department.id }}</td>
+            <td>{{ department.title }}</td>
+            <td>
+                {% if department.chief_user %}
+                    {{ department.chief_user.surname }} {{ department.chief_user.name }}
+                {% else %}
+                    Не назначен
+                {% endif %}
+            </td>
+            <td>{{ department.email }}</td>
+            <td>
+                {% for member in department.members %}
+                    {{ member.surname }} {{ member.name }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                <a href="/edit_department/{{ department.id }}" class="btn btn-warning">✏️</a>
+                <a href="/delete_department/{{ department.id }}" class="btn btn-danger">🗑️</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
