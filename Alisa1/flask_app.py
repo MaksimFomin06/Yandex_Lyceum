@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import logging
 import os
+import re
 
 app = Flask(__name__)
 
@@ -72,7 +73,7 @@ def handle_alice_request(req):
 
     user_command = req['request']['original_utterance'].lower()
     
-    if any(word in user_command for word in ['ладно', 'куплю', 'покупаю', 'хорошо', 'да']):
+    if is_agreement(user_command):
         response['response']['text'] = 'Слона можно найти на Яндекс.Маркете!'
         response['response']['end_session'] = True
         response['response']['card'] = {
@@ -91,13 +92,29 @@ def handle_alice_request(req):
     elif offer_count == 2:
         response_text = "Ты же знаешь, как я хочу слона!"
     elif offer_count >= 3:
-        response_text = f"Все говорят '{user_command}', а ты купи слона!"
+        response_text = f"Все говорят '{req['request']['original_utterance']}', а ты купи слона!"
     
     response['response']['text'] = response_text
     response['response']['tts'] = f"{response_text} Сло+ник такой милый!"
     response['response']['buttons'] = get_suggests(user_id)
     
     return response
+
+
+def is_agreement(text):
+    agreement_patterns = [
+        r'^ладно$',
+        r'^куплю$',
+        r'^покупаю$',
+        r'^хорошо$',
+        r'^да$',
+        r'я\s+куплю',
+        r'я\s+покупаю',
+        r'я\s+согласен',
+        r'я\s+согласна',
+        r'я\s+хочу'
+    ]
+    return any(re.search(pattern, text.lower()) for pattern in agreement_patterns)
 
 
 def get_suggests(user_id):
