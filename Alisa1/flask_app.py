@@ -63,10 +63,7 @@ def handle_alice_request(req):
     }
 
     if req['session']['new']:
-        session_storage[user_id] = {
-            'suggests': ["Не хочу", "Не буду", "Отстань"],
-            'elephant_offers': 0
-        }
+        init_session(user_id)
         response['response']['text'] = 'Привет! Купи слона!'
         response['response']['buttons'] = get_suggests(user_id)
         return response
@@ -74,31 +71,52 @@ def handle_alice_request(req):
     user_command = req['request']['original_utterance'].lower()
     
     if is_agreement(user_command):
-        response['response']['text'] = 'Слона можно найти на Яндекс.Маркете!'
-        response['response']['end_session'] = True
-        response['response']['card'] = {
-            'type': 'BigImage',
-            'image_id': '1030494/46ca1d61d1e73e51b1ed',
-            'title': 'Вот такого слона ты можешь купить!',
-            'description': 'Загляни на Яндекс.Маркет'
-        }
-        return response
+        if session_storage[user_id]['current_animal'] == 'слон':
+            response['response']['text'] = 'Отлично! Слона можно найти на Яндекс.Маркете! А теперь купи кролика!'
+            response['response']['card'] = {
+                'type': 'BigImage',
+                'image_id': '1030494/46ca1d61d1e73e51b1ed',
+                'title': 'Вот такого слона ты купил!',
+                'description': 'Теперь купи кролика!'
+            }
+            session_storage[user_id]['current_animal'] = 'кролик'
+            session_storage[user_id]['elephant_offers'] = 0
+            response['response']['buttons'] = get_suggests(user_id)
+            return response
+        else:
+            response['response']['text'] = 'Кролика можно найти на Яндекс.Маркете! Спасибо за покупки!'
+            response['response']['end_session'] = True
+            response['response']['card'] = {
+                'type': 'BigImage',
+                'image_id': '965417/5a10e0e4e9f435d1c5e7',
+                'title': 'Вот такого кролика ты купил!',
+                'description': 'Спасибо за покупки!'
+            }
+            return response
 
     session_storage[user_id]['elephant_offers'] += 1
     offer_count = session_storage[user_id]['elephant_offers']
     
     if offer_count == 1:
-        response_text = "Ну пожалуйста! Купи слона!"
+        response_text = f"Ну пожалуйста! Купи {session_storage[user_id]['current_animal']}а!"
     elif offer_count == 2:
-        response_text = "Ты же знаешь, как я хочу слона!"
+        response_text = f"Ты же знаешь, как я хочу {session_storage[user_id]['current_animal']}а!"
     elif offer_count >= 3:
-        response_text = f"Все говорят '{req['request']['original_utterance']}', а ты купи слона!"
+        response_text = f"Все говорят '{req['request']['original_utterance']}', а ты купи {session_storage[user_id]['current_animal']}а!"
     
     response['response']['text'] = response_text
-    response['response']['tts'] = f"{response_text} Сло+ник такой милый!"
+    response['response']['tts'] = f"{response_text} {session_storage[user_id]['current_animal'].capitalize()} такой милый!"
     response['response']['buttons'] = get_suggests(user_id)
     
     return response
+
+
+def init_session(user_id):
+    session_storage[user_id] = {
+        'suggests': ["Не хочу", "Не буду", "Отстань"],
+        'elephant_offers': 0,
+        'current_animal': 'слон'
+    }
 
 
 def is_agreement(text):
@@ -129,7 +147,7 @@ def get_suggests(user_id):
     
     buttons.append({
         'title': 'Ладно',
-        'url': 'https://market.yandex.ru/search?text=слон',
+        'url': f"https://market.yandex.ru/search?text={session_storage[user_id]['current_animal']}",
         'hide': True
     })
     
