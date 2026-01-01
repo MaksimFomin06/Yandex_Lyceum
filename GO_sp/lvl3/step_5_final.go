@@ -4,65 +4,80 @@ import (
 	"strings"
 	"fmt"
 	"sort"
+	"unicode"
 )
 
 func getTopWords(wordMap map[string]int, n int) []string {
-	type Pair struct {
-		key string
-		value int
+	keys := make([]string, 0, len(wordMap))
+	for k := range wordMap {
+		keys = append(keys, k)
 	}
 
-	pairs := make([]Pair, 0, len(wordMap))
-	for k, v := range wordMap {
-		pairs = append(pairs, pair[k, v])
+	sort.Slice(keys, func(i, j int) bool {
+		return wordMap[keys[i]] > wordMap[keys[j]]
+	})
+
+	if len(keys) > n {
+		keys = keys[:n]
 	}
 
-	sort.Slice(pairs, func(i, j int) bool) {
-		return pairs[i].value > pairs[j].value
-	}
+	return keys
+}
 
-	if len(pairs) > 5 {
-		pairs = pairs[:5]
-	}
-
-	return pairs
+func cleanWord(s string) string {
+	return strings.Map(func(r rune) rune {
+		if unicode.IsLetter(r) || unicode.IsNumber(r) {
+			return r
+		}
+		return -1
+	}, s)
 }
 
 func AnalyzeText(text string) {
 	at_map := make(map[string]int)
 	text = strings.ToLower(text)
 	words := strings.Fields(text)
-	word_count := len(words) // Количество слов в тексте
-	unique_word_count := 0 // Количество уникальных слов
-	max_count_in_text := 0
-	max_count_in_text_key := 0 // Индекс самого частого слова
 
-	for i := 0; i < word_count; i++ {
-		idx := words[i]
-		at_map[idx]++
+	cleanWords := make([]string, 0, len(words))
+	for _, word := range words {
+		clean := cleanWord(word)
+		if clean != "" {
+			cleanWords = append(cleanWords, clean)
+		}
 	}
 
-	for key := range at_map {
-		if at_map[key] == 1 {
-			unique_word_count++
-		}
-		if at_map[key] > max_count_in_text {
-			max_count_in_text = at_map[key]
+	word_count := len(cleanWords)
+	unique_word_count := 0
+	max_count_in_text := 0
+	max_count_in_text_key := ""
+
+	for _, word := range cleanWords {
+		at_map[word]++
+	}
+
+	for key, count := range at_map {
+		if count > max_count_in_text {
+			max_count_in_text = count
 			max_count_in_text_key = key
 		}
+
+		unique_word_count++
 	}
 
 	top_five_words := getTopWords(at_map, 5)
 
 	fmt.Printf("Количество слов: %d\n", word_count)
 	fmt.Printf("Количество уникальных слов: %d\n", unique_word_count)
-	fmt.Printf("Самое часто встречающееся слово: %s (встречается %d раз)\n", at_map[max_count_in_text_key], unique_word_count)
+	fmt.Printf("Самое часто встречающееся слово: \"%s\" (встречается %d раз)\n", max_count_in_text_key, max_count_in_text)
 	fmt.Println("Топ-5 самых часто встречающихся слов:")
-	for key, value := range top_five_words {
-		fmt.Printf("%s: %d раз\n", key, value)
+	for _, word := range top_five_words {
+		count := at_map[word]
+		fmt.Printf("\"%s\": %d раз\n", word, count)
 	}
 }
 
 func main() {
-	AnalyzeText("Самое часто встречающееся слово: *строка* (встречается *целое число* раз)")
+	AnalyzeText("one two two three three three four four four four five five five five five")
+	AnalyzeText("Go очень очень очень ОЧЕНЬ ОчЕнь очень оЧЕНь классный классный! go просто, ну просто классный. GO Классный!")
+	AnalyzeText("Я так люблю море. Я на море. Я так люблю. Море! Я море!!! ЛЮБЛЮ МОРЕ")
 }
