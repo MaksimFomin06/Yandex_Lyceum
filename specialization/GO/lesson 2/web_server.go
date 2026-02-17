@@ -26,18 +26,29 @@ func ipBlockerMiddleware(blockedIP string, next http.Handler) http.Handler {
 	})
 }
 
+func authMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		auth := r.Header.Get("Authorization")
+		if auth != "Bearer valid_token" {
+			http.Error(w, "401 Unauthorized", http.StatusUnauthorized)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func mainHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		return
 	}
-	w.Write([]byte("Access granted"))
+	w.Write([]byte("Authorized access"))
 }
 
 func startServer(address string) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", mainHandler)
 
-	handler := ipBlockerMiddleware("192.168.0.1", mux)
+	handler := authMiddleware(mux)
 	handler = loggingMiddleware(handler)
 
 	http.ListenAndServe(address, handler)
