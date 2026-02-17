@@ -4,12 +4,20 @@ import (
 	"fmt"
 	"net/http"
 	"io"
-	"log"
 )
 
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// log.Printf("Метод: %s, URL: %s", r.Method, r.URL.Path)
+		next.ServeHTTP(w, r)
+	})
+}
+
+func authMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if _, err := r.Cookie("user_id"); err != nil {
+			http.Redirect(w, r, "/login", http.StatusFound)
+			return
+		}
 		next.ServeHTTP(w, r)
 	})
 }
@@ -18,23 +26,24 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		return
 	}
+	w.Write([]byte("Access granted"))
+}
 
-	if _, err := r.Cookie("session_id"); err != nil {
-		http.SetCookie(w, &http.Cookie{
-			Name:  "session_id",
-			Value: "abc123",
-			Path:  "/",
-		})
-		w.Write([]byte("Welcome!"))
-		return
-	}
-
-	w.Write([]byte("Welcome back!"))
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name:  "user_id",
+		Value: "123",
+		Path:  "/",
+	})
+	w.Write([]byte("Please log in"))
 }
 
 func startServer(address string) {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", mainHandler)
+	mux.HandleFunc("/login", loginHandler)
+
+	protected := authMiddleware(http.HandlerFunc(mainHandler))
+	mux.Handle("/", protected)
 
 	handler := loggingMiddleware(mux)
 
