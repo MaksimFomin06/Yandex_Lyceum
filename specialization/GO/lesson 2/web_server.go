@@ -4,11 +4,30 @@ import (
 	"fmt"
 	"net/http"
 	"io"
+	"log"
 )
 
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Метод: %s, URL: %s", r.Method, r.URL.Path)
+		next.ServeHTTP(w, r)
+	})
+}
+
+func mainHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		w.Write([]byte("Middleware Test"))
+		return
+	}
+}
+
 func startServer(address string) {
-	http.HandleFunc("/", getRequest)
-	http.ListenAndServe(address, nil)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", mainHandler)
+
+	handler := loggingMiddleware(mux)
+
+	http.ListenAndServe(address, handler)
 }
 
 func sendRequest(url string) (string, error) {
@@ -30,4 +49,8 @@ func sendRequest(url string) (string, error) {
 
 func getRequest(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello from server")
+}
+
+func main() {
+	startServer(":8080")
 }
