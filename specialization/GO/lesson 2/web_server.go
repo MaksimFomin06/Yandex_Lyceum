@@ -12,10 +12,14 @@ func loggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func authMiddleware(next http.Handler) http.Handler {
+func ipBlockerMiddleware(blockedIP string, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if _, err := r.Cookie("user_id"); err != nil {
-			http.Redirect(w, r, "/login", http.StatusFound)
+		clientIP := r.Header.Get("X-Real-IP")
+		if clientIP == "" {
+			clientIP = r.RemoteAddr
+		}
+		if clientIP == blockedIP {
+			http.Error(w, "403 Forbidden", http.StatusForbidden)
 			return
 		}
 		next.ServeHTTP(w, r)
@@ -29,23 +33,12 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Access granted"))
 }
 
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	http.SetCookie(w, &http.Cookie{
-		Name:  "user_id",
-		Value: "123",
-		Path:  "/",
-	})
-	w.Write([]byte("Please log in"))
-}
-
 func startServer(address string) {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/login", loginHandler)
+	mux.HandleFunc("/", mainHandler)
 
-	protected := authMiddleware(http.HandlerFunc(mainHandler))
-	mux.Handle("/", protected)
-
-	handler := loggingMiddleware(mux)
+	handler := ipBlockerMiddleware("192.168.0.1", mux)
+	handler = loggingMiddleware(handler)
 
 	http.ListenAndServe(address, handler)
 }
