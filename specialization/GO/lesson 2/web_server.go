@@ -9,16 +9,27 @@ import (
 
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("Метод: %s, URL: %s", r.Method, r.URL.Path)
+		// log.Printf("Метод: %s, URL: %s", r.Method, r.URL.Path)
 		next.ServeHTTP(w, r)
 	})
 }
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		w.Write([]byte("Middleware Test"))
+	if r.Method != http.MethodGet {
 		return
 	}
+
+	if _, err := r.Cookie("session_id"); err != nil {
+		http.SetCookie(w, &http.Cookie{
+			Name:  "session_id",
+			Value: "abc123",
+			Path:  "/",
+		})
+		w.Write([]byte("Welcome!"))
+		return
+	}
+
+	w.Write([]byte("Welcome back!"))
 }
 
 func startServer(address string) {
