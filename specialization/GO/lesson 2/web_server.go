@@ -37,6 +37,20 @@ func authMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func languageHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		return
+	}
+
+	cookie, err := r.Cookie("lang")
+	if err != nil || cookie.Value != "ru" {
+		fmt.Fprintln(w, "Hello!")
+		return
+	}
+
+	fmt.Fprintln(w, "Привет!")
+}
+
 func mainHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		return
@@ -46,10 +60,9 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 
 func startServer(address string) {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", mainHandler)
+	mux.HandleFunc("/", languageHandler)
 
-	handler := authMiddleware(mux)
-	handler = loggingMiddleware(handler)
+	handler := loggingMiddleware(mux)
 
 	http.ListenAndServe(address, handler)
 }
